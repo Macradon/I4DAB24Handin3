@@ -1,40 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
 using YourTime.Models;
 using YourTime.Services;
+using Microsoft.AspNetCore.Mvc;
 
-namespace YourTime.Controllers
+namespace UsersApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly UserServices _userServices;
+        private readonly UserServices _userService;
 
-        public UserController(UserServices userServi)
+        public UsersController(UserServices userService)
         {
-            _userServices = userServi;
+            _userService = userService;
         }
 
         [HttpGet]
-        public ActionResult<List<User>> GetblkList()
+        public ActionResult<List<User>> Get()
         {
-            return _userServices.GetBlackList();
+            return _userService.Get();
         }
 
-        public UserController Getpost()
+        [HttpGet("{id:length(24)}", Name = "GetUser")]
+        public ActionResult<User> Get( string id)
         {
-            return _userServices.GetPost();
-        }
-
-        [HttpGet("{id:length(24)}", Name = "GetBook")]
-        public ActionResult<User> Get(string id)
-        {
-            var user = _userServices.Get(id);
+            var user = _userService.Get(id);
 
             if (user == null)
             {
@@ -47,22 +38,22 @@ namespace YourTime.Controllers
         [HttpPost]
         public ActionResult<User> Create(User user)
         {
-            _userServices.Create(user);
+            _userService.Create(user);
 
-            return CreatedAtRoute("Get User", new { id = user.Id.ToString() }, user);
+            return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
         }
 
         [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, User UserIn)
+        public IActionResult Update(string id, User userIn)
         {
-            var book = _userServices.Get(id);
+            var user = _userService.Get(id);
 
-            if (book == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _userServices.Update(id, UserIn);
+            _userService.Update(id, userIn);
 
             return NoContent();
         }
@@ -70,14 +61,14 @@ namespace YourTime.Controllers
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
-            var user = _userServices.Get(id);
+            var user = _userService.Get(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            _userServices.Remove(user.Id);
+            _userService.Remove(user.Id);
 
             return NoContent();
         }
