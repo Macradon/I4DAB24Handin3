@@ -9,13 +9,13 @@ namespace YourTime.Models
 {
     public class Wall
     {
-        [BsonElement("Posts")]
-        public List<Post> Posts { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         [BsonElement("UserId")]
         public string UserId { get; set; }
 
         public List<string> PostIds { get; set; }
-
     }
 }

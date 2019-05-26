@@ -38,7 +38,7 @@ namespace YourTime.Controllers
         [HttpPost]
         public ActionResult<Post> Create(Post post)
         {
-            _postService.Create(post);
+            _postService.Create(post);            
 
             return CreatedAtRoute("GetPost", new { id = post.Id.ToString() }, post);
         }

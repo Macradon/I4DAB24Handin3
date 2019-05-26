@@ -16,12 +16,6 @@ namespace YourTime.Controllers
             _feedService = feedService;
         }
 
-        [HttpGet]
-        public ActionResult<List<Feed>> Get()
-        {
-            return _feedService.Get();
-        }
-
         [HttpGet("{id:length(24)}", Name = "GetFeed")]
         public ActionResult<Feed> Get(string id)
         {
@@ -72,5 +66,7 @@ namespace YourTime.Controllers
 
             return NoContent();
         }
+
+
     }
 }

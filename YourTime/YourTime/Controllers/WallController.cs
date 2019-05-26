@@ -73,6 +73,21 @@ namespace YourTime.Controllers
 
             return NoContent();
         }
+
+        [HttpPut("{id:length(24)}")]
+        public IActionResult AddPost(string wallId, string postId)
+        {
+            var wall = _wallServices.Get(wallId);
+
+            if (wall == null)
+            {
+                return NotFound();
+            }
+
+            wall.PostIds.Add(postId);
+
+            return NoContent();
+        }
     }
 }
 

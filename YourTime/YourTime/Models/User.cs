@@ -32,6 +32,9 @@ namespace YourTime.Models
         [BsonElement("Blacklist")]
         public List<string> Blacklist { get; set; }
 
+        [BsonElement("Blacklisted")]
+        public List<string> Blacklisted { get; set; }
+
         [BsonElement("Follows")]
         public List<string> Follows { get; set; }
     }
