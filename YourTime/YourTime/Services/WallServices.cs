@@ -14,44 +14,44 @@ namespace YourTime.Services
         //The Class implements CRUD(Create, Read, Update, Delete) methods
 
 
-        private readonly IMongoCollection<User> _wall;
+        private readonly IMongoCollection<Wall> _wall;
 
         public WallServices(IConfiguration config)
         {
             var client = new MongoClient(config.GetConnectionString("SocialNetworkDb"));
             var database = client.GetDatabase("SocialNetworkDb");
-            _wall = database.GetCollection<User>("Walls");
+            _wall = database.GetCollection<Wall>("Walls");
         }
 
-        public List<User> Get()
+        public List<Wall> Get()
         {
             return _wall.Find(wall => true).ToList();
         }
 
-        public User Get(string id)
+        public Wall Get(string id)
         {
-            return _wall.Find<User>(wall => wall.Id == id).FirstOrDefault();
+            return _wall.Find<Wall>(wall => wall.UserId == id).FirstOrDefault();
         }
 
-        public User Create(User wall)
+        public Wall Create(Wall wall)
         {
             _wall.InsertOne(wall);
             return wall;
         }
 
-        public void Update(string id, User wallIn)
+        public void Update(string id, Wall wallIn)
         {
-            _wall.ReplaceOne(wall => wall.Id == id, wallIn);
+            _wall.ReplaceOne(wall => wall.UserId == id, wallIn);
         }
 
-        public void Remove(User wallIn)
+        public void Remove(Wall wallIn)
         {
-            _wall.DeleteOne(wall => wall.Id == wallIn.Id);
+            _wall.DeleteOne(wall => wall.UserId == wallIn.UserId);
         }
 
         public void Remove(string id)
         {
-            _wall.DeleteOne(wall => wall.Id == id);
+            _wall.DeleteOne(wall => wall.UserId == id);
         }
     }
 }

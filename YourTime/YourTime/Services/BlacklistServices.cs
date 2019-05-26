@@ -10,48 +10,48 @@ namespace YourTime.Services
 {
     public class BlacklistServices
     {
-        //This Class is for implementation of services for the circle model
+        //This Class is for implementation of services for the blacklist model
         //The Class implements CRUD(Create, Read, Update, Delete) methods
 
 
-        private readonly IMongoCollection<User> _blacklist;
+        private readonly IMongoCollection<Blacklist> _blacklist;
 
         public BlacklistServices(IConfiguration config)
         {
             var client = new MongoClient(config.GetConnectionString("SocialNetworkDb"));
             var database = client.GetDatabase("SocialNetworkDb");
-            _blacklist = database.GetCollection<User>("Blacklist");
+            _blacklist = database.GetCollection<Blacklist>("Blacklist");
         }
 
-        public List<User> Get()
+        public List<Blacklist> Get()
         {
             return _blacklist.Find(blacklist => true).ToList();
         }
 
-        public User Get(string id)
+        public Blacklist Get(string id)
         {
-            return _blacklist.Find<User>(blacklist => blacklist.Id == id).FirstOrDefault();
+            return _blacklist.Find<Blacklist>(blacklist => blacklist.Id == id).FirstOrDefault();
         }
 
-        public User Create(User blacklist)
+        public Blacklist Create(Blacklist blacklist)
         {
             _blacklist.InsertOne(blacklist);
             return blacklist;
         }
 
-        public void Update(string id, User blkIn)
+        public void Update(string id, Blacklist blkIn)
         {
-            _blacklist.ReplaceOne(blacklist => blacklist.Id == id, blkIn);
+            _blacklist.ReplaceOne(blacklist => blacklist.UserId == id, blkIn);
         }
 
-        public void Remove(User blkIn)
+        public void Remove(Blacklist blkIn)
         {
-            _blacklist.DeleteOne(blacklist => blacklist.Id == blkIn.Id);
+            _blacklist.DeleteOne(blacklist => blacklist.UserId == blkIn.UserId);
         }
 
         public void Remove(string id)
         {
-            _blacklist.DeleteOne(blacklist => blacklist.Id == id);
+            _blacklist.DeleteOne(blacklist => blacklist.UserId == id);
         }
     }
 }
