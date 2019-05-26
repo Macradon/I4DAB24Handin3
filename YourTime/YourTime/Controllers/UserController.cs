@@ -3,15 +3,15 @@ using YourTime.Models;
 using YourTime.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UsersApi.Controllers
+namespace YourTime.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly UserServices _userService;
 
-        public UsersController(UserServices userService)
+        public UserController(UserServices userService)
         {
             _userService = userService;
         }
