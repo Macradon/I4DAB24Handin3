@@ -14,37 +14,37 @@ namespace YourTime.Services
     //The Class implements CRUD(Create, Read, Update, Delete) methods
 
    
-            private readonly IMongoCollection<User> _circles;
+            private readonly IMongoCollection<Circle> _circles;
 
             public CircleServices(IConfiguration config)
             {
                 var client = new MongoClient(config.GetConnectionString("SocialNetworkDb"));
                 var database = client.GetDatabase("SocialNetworkDb");
-                _circles = database.GetCollection<User>("Circles");
+                _circles = database.GetCollection<Circle>("Circles");
             }
 
-            public List<User> Get()
+            public List<Circle> Get()
             {
                 return _circles.Find(circle => true).ToList();
             }
 
-            public User Get(string id)
+            public Circle Get(string id)
             {
-                return _circles.Find<User>(circle => circle.Id == id).FirstOrDefault();
+                return _circles.Find<Circle>(circle => circle.Id == id).FirstOrDefault();
             }
 
-            public User Create(User circle)
+            public Circle Create(Circle circle)
             {
                 _circles.InsertOne(circle);
                 return circle;
             }
 
-            public void Update(string id, User CircleIn)
+            public void Update(string id, Circle circleIn)
             {
-                _circles.ReplaceOne(circle => circle.Id == id, CircleIn);
+                _circles.ReplaceOne(circle => circle.Id == id, circleIn);
             }
 
-            public void Remove(User userIn)
+            public void Remove(Circle userIn)
             {
                 _circles.DeleteOne(circle => circle.Id == userIn.Id);
             }
