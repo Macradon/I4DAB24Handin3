@@ -1,94 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using YourTime.Models;
 using Microsoft.Extensions.Configuration;
-using YourTime.Models;
 using MongoDB.Driver;
-using YourTime.Models;
+
+//This Class is for implementation of services for the User model
+//The Class implements CRUD(Create, Read, Update, Delete) methods
 
 namespace YourTime.Services
 {
     public class UserServices
     {
-        private readonly IMongoCollection<Circle> _circle;
-        private readonly IMongoCollection<Post> _posts;
-        private readonly IMongoCollection<User> _User;
-
+        private readonly IMongoCollection<User> _users;
 
         public UserServices(IConfiguration config)
         {
-            var client = new MongoClient(config.GetConnectionString("YourTimeDB"));
-            var databaseCircle = client.GetDatabase("YourTimeDB");
-            _circle = databaseCircle.GetCollection<Circle>("Circle");
-
-            var databaseUser = client.GetDatabase("YourTimeDB");
-            _User = databaseUser.GetCollection<User>("User");
-
+            var client = new MongoClient(config.GetConnectionString("SocialNetworkDb"));
+            var database = client.GetDatabase("SocialNetworkDb");
+            _users = database.GetCollection<User>("Users");
         }
 
-        public List<Circle> GetCirle()
+        public List<User> Get()
         {
-            //return _User.Find(User => true).ToList();
-            return _circle.Find(Circle => true).ToList();
+            return _users.Find(user => true).ToList();
         }
 
-        public List<Post> GetPost()
+        public User Get(string id)
         {
-            return _posts.Find(Post => true).ToList();
+            return _users.Find<User>(user => user.Id == id).FirstOrDefault();
         }
 
-        public List<User> GetBlackList()
+        public User Create(User user)
         {
-            return _User.Find(Blacklist => true).ToList();
+            _users.InsertOne(user);
+            return user;
         }
 
-        public List<User> GetFollowList()
+        public void Update(string id, User userIn)
         {
-            return _User.Find(Follow => true).ToList();
+            _users.ReplaceOne(user => user.Id == id, userIn);
         }
-
-        public Circle Get(string id)
+        
+        public void Remove(User userIn)
         {
-            return _circle.Find<Circle>(User => User.Id == id).FirstOrDefault();
+            _users.DeleteOne(user => user.Id == userIn.Id);
         }
 
-        public Circle Create(Circle cirkel)
+        public void Remove(string id)
         {
-            _circle.InsertOne(cirkel);
-            return cirkel;
+            _users.DeleteOne(user => user.Id == id);
         }
-
-        public void Update(string id, Circle CirkelIn)
-        {
-            _circle.ReplaceOne(cirkel => cirkel.Id == id, CirkelIn);
-        }
-
-        public void Remove(Circle CircleIn)
-        {
-            _circle.DeleteOne(cirkel => cirkel.Id == CircleIn.Id);
-        }
-
-        public void RemoveCircle(string id)
-        {
-            _circle.DeleteOne(Circle => Circle.Id == id);
-        }
-
-        public User Create(User BlkList)
-        {
-            _User.InsertOne(BlkList);
-            return BlkList;
-        }
-
-        public void Remove(User BlkListIn)
-        {
-            _circle.DeleteOne(BlkList => BlkList.Id == BlkListIn.Id);
-        }
-
-        public void RemoveBlkList(string id)
-        {
-            _circle.DeleteOne(BlkList => BlkList.Id == id);
-        }
-
     }
 }

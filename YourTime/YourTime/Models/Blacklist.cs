@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace YourTime.Models
 {
-    public class Post
+    public class Blacklist
     {
     }
 }
