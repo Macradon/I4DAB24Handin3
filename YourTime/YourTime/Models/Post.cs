@@ -21,6 +21,6 @@ namespace YourTime.Models
         public string Content { get; set; }
 
         [BsonElement("Privacy")]
-        public List<string> Privacy { get; set; }
+        public string Privacy { get; set; }
     }
 }

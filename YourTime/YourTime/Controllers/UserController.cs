@@ -2,6 +2,7 @@
 using YourTime.Models;
 using YourTime.Services;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace YourTime.Controllers
 {
@@ -10,12 +11,14 @@ namespace YourTime.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserServices _userService;
+        private readonly CircleServices _circleService;
         private IMongoCollection<User> _users;
         private IMongoCollection<Post> _posts;
 
-        public UserController(UserServices userService)
+        public UserController(UserServices userService, CircleServices circleService)
         {
             _userService = userService;
+            _circleService = circleService;
         }
 
         [HttpGet]
@@ -31,7 +34,7 @@ namespace YourTime.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return BadRequest("User not found");
             }
 
             return user;
@@ -52,7 +55,7 @@ namespace YourTime.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return BadRequest("User not found");
             }
 
             _userService.Update(id, userIn);
@@ -67,7 +70,7 @@ namespace YourTime.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return BadRequest("User not found");
             }
 
             _userService.Remove(user.Id);
@@ -82,7 +85,7 @@ namespace YourTime.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return BadRequest("User not found");
             }
 
             var posts = _posts.Find(post =>
@@ -97,15 +100,39 @@ namespace YourTime.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
+        public ActionResult<List<Post>> ShowWall(string id, string id2)
+        {
+            var owner = _users.Find(userFiltering => userFiltering.Id == id).FirstOrDefault();
+            var viewer = _users.Find(userFiltering => userFiltering.Id == id2).FirstOrDefault();
+
+            if ((owner == null) || (viewer == null))
+            {
+                return BadRequest("User(s) not found");
+            }
+
+            if (viewer.Blacklisted.Contains(owner.Id))
+            {
+                return BadRequest("Viewer is blocked by owner");
+            }
+
+            var posts = _posts.Find(post =>
+                    post.UserID == owner.Id &&
+                    viewer.Circles.Contains(post.Privacy))
+                .Limit(5).ToList();
+
+            return Ok(posts);
+        }
+
+        [HttpPut("{id:length(24)}")]
         public IActionResult Blacklist(string id, string id2)
         {
             //The User who wants to blacklist
             var user = _userService.Get(id);
             var user2 = _userService.Get(id2);
 
-            if (user == null)
+            if ((user == null) || (user2 == null))
             {
-                return NotFound();
+                return BadRequest("User(s) not found");
             }
 
             user.Blacklist.Add(id2);
@@ -119,10 +146,11 @@ namespace YourTime.Controllers
         {
             //The User who wants to blacklist
             var user = _userService.Get(id);
+            var user2 = _userService.Get(id2);
 
-            if (user == null)
+            if ((user == null) || (user2 == null))
             {
-                return NotFound();
+                return BadRequest("User(s) not found");
             }
 
             user.Follows.Add(id2);
@@ -139,11 +167,15 @@ namespace YourTime.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return BadRequest("User not found");
+            }
+            if (circle == null)
+            {
+                return BadRequest("Circle not found");
             }
 
             user.Circles.Add(circleId);
-            circle.UserId.Add(userId);
+            circle.UsersId.Add(userId);
 
             return NoContent();
         }
