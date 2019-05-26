@@ -14,6 +14,9 @@ namespace YourTime.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonElement("User")]
+        public string UserID { get; set; }
+
         [BsonElement("Content")]
         public string Content { get; set; }
 
