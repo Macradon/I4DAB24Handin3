@@ -25,33 +25,33 @@ namespace YourTime.Services
 
         public List<User> Get()
         {
-            return _blacklist.Find(circle => true).ToList();
+            return _blacklist.Find(blacklist => true).ToList();
         }
 
         public User Get(string id)
         {
-            return _blacklist.Find<User>(circle => circle.Id == id).FirstOrDefault();
+            return _blacklist.Find<User>(blacklist => blacklist.Id == id).FirstOrDefault();
         }
 
-        public User Create(User circle)
+        public User Create(User blacklist)
         {
-            _blacklist.InsertOne(circle);
-            return circle;
+            _blacklist.InsertOne(blacklist);
+            return blacklist;
         }
 
-        public void Update(string id, User CircleIn)
+        public void Update(string id, User blkIn)
         {
-            _blacklist.ReplaceOne(circle => circle.Id == id, CircleIn);
+            _blacklist.ReplaceOne(blacklist => blacklist.Id == id, blkIn);
         }
 
-        public void Remove(User userIn)
+        public void Remove(User blkIn)
         {
-            _blacklist.DeleteOne(circle => circle.Id == userIn.Id);
+            _blacklist.DeleteOne(blacklist => blacklist.Id == blkIn.Id);
         }
 
         public void Remove(string id)
         {
-            _blacklist.DeleteOne(circle => circle.Id == id);
+            _blacklist.DeleteOne(blacklist => blacklist.Id == id);
         }
     }
 }
